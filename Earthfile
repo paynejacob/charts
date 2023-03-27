@@ -31,7 +31,7 @@ lint:
 release:
     ARG REPOSITORY="ghcr.io/paynejacob/charts"
 
-    RUN --secret username=username --secret password=password helm registry login -u $username -p $password oci://$REPOSITORY
+    RUN --secret username=username --secret password=password helm registry login -u $username -p $password $REPOSITORY
 
     COPY +build/build build
 
