@@ -16,4 +16,4 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - run: earthly --ci --secret username=${{ github.actor }} --secret password=${{ github.GITHUB_TOKEN }} +release --repository="ghcr.io/${{ vars.GITHUB_REPOSITORY }}"
+      - run: earthly --ci --secret username=${{ github.actor }} --secret password=${{ github.GITHUB_TOKEN }} +release --repository="ghcr.io/$GITHUB_REPOSITORY"
