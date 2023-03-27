@@ -1,0 +1,4 @@
+apiVersion: v2
+name: docker-registry
+version: 0.1.0
+appVersion: "2.8"

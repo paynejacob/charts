@@ -1,0 +1,37 @@
+replicas: 2
+
+ingress:
+  enabled: true
+  host: registry.local
+  ingressClassName: ""
+
+persistence:
+  enabled: true
+  existingClaim: ""
+  storageClassName: ""
+  accessModes:
+    - ReadWriteMany
+  size: "8Gi"
+
+config: |
+  version: 0.1
+  log:
+    accesslog:
+      disabled: true
+    level: info
+    formatter: text
+  storage:
+    filesystem:
+      rootdirectory: /var/lib/registry
+    delete:
+      enabled: true
+    redirect:
+      disable: false
+    maintenance:
+      uploadpurging:
+        enabled: true
+        age: 168h
+        interval: 24h
+        dryrun: false
+  http:
+    addr: 0.0.0.0:5000

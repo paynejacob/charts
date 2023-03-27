@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-registry
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      app: registry
+      release: {{ .Release.Name | quote }}
+  template:
+    metadata:
+      labels:
+        app: registry
+        release: {{ .Release.Name | quote }}
+        revision: {{ .Release.Revision | quote }}
+    spec:
+      automountServiceAccountToken: false
+      containers:
+        - name: registry
+          image: "docker.io/registry:{{ .Chart.AppVersion }}"
+          ports:
+            - containerPort: 5000
+          volumeMounts:
+            - mountPath: /etc/docker/registry/config.yml
+              name: config
+              readOnly: true
+              subPath: config.yml
+            - mountPath: /var/lib/registry
+              name: data
+          envFrom:
+            - secretRef:
+                name: {{ .Release.Name }}-secret
+      volumes:
+        {{- if or .Values.persistence.enabled .Values.persistence.existingClaim }}
+        - name: data
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-data
+        {{- else }}
+        - name: data
+          emptyDir:
+            sizeLimit: {{ .Values.persistence.size }}
+        {{ end }}
+        - name: config
+          secret:
+            secretName: {{ .Release.Name }}-config
